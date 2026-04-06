@@ -38,21 +38,84 @@ const lineSeries = [
   },
 ];
 
-const lineOptions = {
-  chart: { type: "line", toolbar: { show: false } },
-  stroke: { curve: "smooth" },
-  xaxis: {
-    categories: [
-      "2026-03-31",
-      "2026-04-01",
-      "2026-04-02",
-      "2026-04-03",
-      "2026-04-04",
-      "2026-04-05",
-      "2026-04-06",
-    ],
+const lineOptions = computed(() => ({
+  chart: {
+    type: "line",
+    toolbar: { show: false },
+    background: "transparent",
+    foreColor: colorMode.value === "dark" ? "#94a3b8" : "#64748b",
   },
-};
+
+  theme: {
+    mode: colorMode.value === "dark" ? "dark" : "light",
+  },
+
+  stroke: {
+    curve: "smooth",
+    width: 3,
+  },
+
+  colors: ["#22c55e"],
+
+  fill: {
+    type: "gradient",
+    gradient: {
+      shade: colorMode.value === "dark" ? "dark" : "light",
+      type: "vertical",
+      shadeIntensity: 0.5,
+      gradientToColors: ["#4ade80"],
+      opacityFrom: 0.4,
+      opacityTo: 0,
+      stops: [0, 100],
+    },
+  },
+
+  markers: {
+    size: 4,
+    colors: ["#22c55e"],
+    strokeColors: "#fff",
+    strokeWidth: 2,
+    hover: {
+      size: 6,
+    },
+  },
+
+  grid: {
+    borderColor: colorMode.value === "dark" ? "#1e293b" : "#e5e7eb",
+    strokeDashArray: 4,
+  },
+
+  xaxis: {
+    categories: ["31 Mar", "01 Apr", "02 Apr", "03 Apr", "04 Apr", "05 Apr", "06 Apr"],
+    axisBorder: { show: false },
+    axisTicks: { show: false },
+  },
+
+  yaxis: {
+    labels: {
+      formatter: (val: number) => val.toFixed(0),
+    },
+  },
+
+  tooltip: {
+    theme: colorMode.value === "dark" ? "dark" : "light",
+    x: {
+      show: true,
+    },
+    y: {
+      formatter: (val: number) => `${val} Pegawai`,
+    },
+  },
+
+  responsive: [
+    {
+      breakpoint: 640,
+      options: {
+        chart: { height: 250 },
+      },
+    },
+  ],
+}));
 
 /* ================== TABLE ================== */
 const tableData = Array.from({ length: 7 }, (_, i) => ({
@@ -76,7 +139,7 @@ const tableData = Array.from({ length: 7 }, (_, i) => ({
       <div
         v-for="stat in stats"
         :key="stat.title"
-        :class="['text-white rounded-xl p-4 shadow-md', stat.color]"
+        :class="['text-white rounded-xl p-4 shadow-md text-center', stat.color]"
       >
         <p class="text-sm opacity-80">{{ stat.title }}</p>
         <h2 class="text-xl font-bold mt-1">{{ stat.value }}</h2>
@@ -85,7 +148,7 @@ const tableData = Array.from({ length: 7 }, (_, i) => ({
 
     <!-- ================= PIE ================= -->
     <div class="grid md:grid-cols-2 gap-6">
-      <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow">
+      <div class="bg-white dark:bg-slate-800 p-5 py-5 rounded-xl shadow">
         <h3 class="text-sm mb-3 text-center">
           Statistik Pegawai Berdasarkan Kelompok Pegawai
         </h3>
@@ -99,7 +162,7 @@ const tableData = Array.from({ length: 7 }, (_, i) => ({
         </ClientOnly>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow">
+      <div class="bg-white dark:bg-slate-800 p-5 py-5 rounded-xl shadow">
         <h3 class="text-sm mb-3 text-center">
           Statistik Pegawai Berdasarkan Jenis Kelamin
         </h3>
@@ -115,8 +178,25 @@ const tableData = Array.from({ length: 7 }, (_, i) => ({
     </div>
 
     <!-- ================= LINE ================= -->
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow">
-      <h3 class="text-sm mb-3 text-center">Absensi Harian (7 Hari Terakhir)</h3>
+    <div
+      class="bg-white dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800"
+    >
+      <!-- HEADER -->
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200">
+            Absensi Harian
+          </h3>
+          <p class="text-xs text-gray-400 dark:text-slate-500">7 Hari Terakhir</p>
+        </div>
+
+        <UIcon
+          name="heroicons:chart-bar"
+          class="w-5 h-5 text-gray-400 dark:text-slate-500"
+        />
+      </div>
+
+      <!-- CHART -->
       <ClientOnly>
         <apexchart type="line" height="300" :options="lineOptions" :series="lineSeries" />
       </ClientOnly>
