@@ -14,7 +14,7 @@ const handleLogin = async (_data: { email: string; password: string }) => {
   loading.value = false;
 
   $toast.success("Login berhasil!", {
-    description: "Selamat datang di Vanara Admin",
+    description: "Selamat datang di SDM Admin",
   });
 
   await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -22,7 +22,7 @@ const handleLogin = async (_data: { email: string; password: string }) => {
 };
 
 useHead({
-  title: "Login - Vanara Admin",
+  title: "Login - SDM Admin",
 });
 </script>
 

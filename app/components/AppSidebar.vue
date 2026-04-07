@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Vanara from "@/assets/img/ico-app.ico";
+import SDM from "@/assets/img/ico-app.ico";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import {
@@ -72,11 +72,11 @@ const menus: Menu[] = [
   // },
   // { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
   {
-    name: "Data Master",
+    name: "Data",
     icon: "heroicons:cog-6-tooth",
     children: [
-      { name: "Ijin", icon: "heroicons:shield-check", to: "/data-ijin" },
-      { name: "Presensi", icon: "heroicons:calendar-days", to: "/data-presensi" },
+      { name: "Ijin", icon: "heroicons:shield-check", to: "/data/ijin" },
+      { name: "Presensi", icon: "heroicons:calendar-days", to: "/data/presensi" },
       {
         name: "Laporan",
         icon: "heroicons:document-text",
@@ -102,6 +102,7 @@ const menus: Menu[] = [
       { name: "Model Ijin", icon: "heroicons:shield-check", to: "/model-ijin" },
       { name: "Tipe Ijin", icon: "heroicons:shield-check", to: "/tipe-ijin" },
       { name: "Jenis Ijin", icon: "heroicons:shield-check", to: "/jenis-ijin" },
+      { name: "Shift Kerja", icon: "heroicons:clock", to: "/shift-kerja" },
       {
         name: "Karir",
         icon: "heroicons:briefcase",
@@ -109,26 +110,25 @@ const menus: Menu[] = [
           {
             name: "Lowongan",
             icon: "heroicons:clipboard-list",
-            to: "/karir/lowongan",
+            to: "/master/karir/lowongan",
           },
           {
             name: "Syarat",
             icon: "heroicons:clipboard-list",
-            to: "/karir/syarat",
+            to: "/master/karir/syarat",
           },
           {
             name: "Lamaran",
             icon: "heroicons:clipboard-list",
-            to: "/karir/lamaran",
+            to: "/master/karir/lamaran",
           },
           {
             name: "Pengumuman",
             icon: "heroicons:clipboard-list",
-            to: "/karir/pengumuman",
+            to: "/master/karir/pengumuman",
           },
         ],
       },
-      { name: "Shift Kerja", icon: "heroicons:clock", to: "/shift-kerja" },
     ],
   },
 ];
@@ -201,8 +201,8 @@ function toggleSidebar() {
         >
           <div class="flex items-center justify-center">
             <img
-              :src="Vanara"
-              alt="Vanara Logo"
+              :src="SDM"
+              alt="SDM Logo"
               class="w-10 h-10 object-contain drop-shadow-md"
             />
           </div>
@@ -211,7 +211,7 @@ function toggleSidebar() {
             <h1
               class="text-xl font-bold bg-linear-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
             >
-              Vanara<span class="text-green-500">Admin</span>
+              SDM <span class="text-green-500">Admin</span>
             </h1>
           </div>
         </div>

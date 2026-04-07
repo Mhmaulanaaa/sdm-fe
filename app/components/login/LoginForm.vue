@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Vanara from "@/assets/img/ico-app.ico";
+import SDM from "@/assets/img/ico-app.ico";
 
 const emit = defineEmits<{
   submit: [data: { email: string; password: string }];
@@ -23,14 +23,10 @@ const handleSubmit = () => {
     <div class="w-full max-w-md">
       <!-- Mobile Logo -->
       <div class="lg:hidden flex flex-col items-center justify-center mb-8">
-        <img
-          :src="Vanara"
-          alt="Vanara Logo"
-          class="w-14 h-14 object-contain drop-shadow-lg"
-        />
+        <img :src="SDM" alt="SDM Logo" class="w-14 h-14 object-contain drop-shadow-lg" />
 
         <h1 class="text-2xl font-bold mt-2 tracking-wide">
-          <span class="text-yellow-500">Vanara</span>
+          <span class="text-yellow-500">SDM</span>
           <span class="text-gray-900 dark:text-white">Admin</span>
         </h1>
       </div>
@@ -94,7 +90,7 @@ const handleSubmit = () => {
       </UCard>
 
       <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-        © 2026 Vanara Admin. All rights reserved.
+        © 2026 SDM Admin. All rights reserved.
       </p>
     </div>
   </div>

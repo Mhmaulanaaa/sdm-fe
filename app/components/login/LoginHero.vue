@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Vanara from "@/assets/img/ico-app.ico";
+import SDM from "@/assets/img/ico-app.ico";
 
 const stats = [
   { value: "7+", label: "Modul Terintegrasi" },
@@ -59,15 +59,15 @@ const stats = [
             border: 1px solid rgba(39, 194, 109, 0.3);
           "
         >
-          <img :src="Vanara" alt="Logo" class="w-9 h-9 object-contain" />
+          <img :src="SDM" alt="Logo" class="w-9 h-9 object-contain" />
         </div>
         <div>
           <div class="flex items-baseline gap-0.5">
             <span
               class="text-3xl font-black tracking-tight"
               style="color: #27c26d; font-family: 'Georgia', serif"
-              >Vanara</span
-            >
+              >SDM
+            </span>
             <span
               class="text-3xl font-light tracking-tight"
               style="color: #e2e8f0; font-family: 'Georgia', serif"
@@ -118,7 +118,7 @@ const stats = [
               class="text-xs tracking-widest uppercase"
               style="color: #27c26d; letter-spacing: 0.18em"
             >
-              VANARA
+              SDM
             </p>
             <p
               class="text-xs tracking-widest uppercase"
