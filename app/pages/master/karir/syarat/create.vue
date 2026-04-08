@@ -2,39 +2,39 @@
 import { ref } from "vue";
 
 const { addSyarat } = useSyarat();
+const router = useRouter();
+
 useHead({
-  title: "Tambah Lowongan",
+  title: "Tambah Syarat",
 });
 
 const form = ref({
   nama: "",
   deskripsi: "",
-  syarat: "",
+  tipe: "",
   wajib: "",
   status: "",
   no_urut: 1,
   publish: "Tidak",
 });
 
-const router = useRouter();
+// ✅ MAPPER (BIAR AMAN)
+const mapForm = (f: any) => ({
+  nama: f.nama ?? "",
+  deskripsi: f.deskripsi ?? "",
+  tipe: f.tipe ?? "",
+  wajib: f.wajib ?? "",
+  status: f.status ?? "",
+  no_urut: f.no_urut ?? 1,
+  publish: f.publish ?? "Tidak",
+});
 
 const submitForm = () => {
-  addSyarat({
-    nama: form.value.nama,
-    deskripsi: form.value.deskripsi,
-    syarat: form.value.syarat,
-    wajib: form.value.wajib,
-    status: form.value.status,
-    no_urut: form.value.no_urut,
-    publish: form.value.publish,
-  });
-
+  addSyarat(mapForm(form.value));
   router.push("/master/karir/syarat");
 };
 
-const goBack = () => {
-  router.back();
-};
+const goBack = () => router.back();
 </script>
 
 <template>
@@ -94,7 +94,7 @@ const goBack = () => {
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Tipe Syarat</label>
           <select
-            v-model="form.syarat"
+            v-model="form.tipe"
             class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
           >
             <option value="">Pilih</option>

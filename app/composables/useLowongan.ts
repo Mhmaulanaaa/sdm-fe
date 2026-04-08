@@ -16,11 +16,18 @@ export const useLowongan = () => {
                     kode: "LWG001",
                     nama: "Perawat IGD",
                     unit: "IGD",
+                    kelompok: "Kesehatan Masyarakat",
+                    kategori: "Medis",
                     kebutuhan: 5,
+                    status_kepegawaian: "PNS",
+                    sistem_kerja: "WFO",
+                    buka: "2024-05-01",
                     tutup: "2026-04-30",
-                    status: "Aktif",
+                    status: "Buka",
+                    publish: "Ya",
+                    keterangan: "Lowongan untuk unit IGD",
                 },
-            ]
+            ];
             saveData()
         }
     }

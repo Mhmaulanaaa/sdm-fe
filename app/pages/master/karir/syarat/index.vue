@@ -108,7 +108,7 @@ onMounted(() => {
             </td>
 
             <td class="px-2 text-xs">
-              {{ row.syarat }}
+              {{ row.tipe }}
             </td>
 
             <td class="px-2 text-xs">

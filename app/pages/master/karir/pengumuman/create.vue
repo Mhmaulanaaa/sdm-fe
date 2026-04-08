@@ -81,7 +81,7 @@ const goBack = () => {
           <label class="text-sm text-gray-600 dark:text-gray-300">Tanggal Publish</label>
           <input
             v-model="form.tanggalpublish"
-            type="text"
+            type="date"
             class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
           />
         </div>

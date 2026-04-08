@@ -13,7 +13,7 @@ export const usePengumuman = () => {
             pengumuman.value = [
                 {
                     id: 1,
-                    judul: "Judul Pengumuman 1",
+                    Judul: "Judul Pengumuman 1",
                     tanggalpublish: "2024-05-01",
                     status: "Aktif",
                 },

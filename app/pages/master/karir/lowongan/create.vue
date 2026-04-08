@@ -29,8 +29,15 @@ const submitForm = () => {
     kode: form.value.kode,
     nama: form.value.nama,
     unit: form.value.unit,
+    kelompok: form.value.kelompok,
+    kategori: form.value.kategori,
     kebutuhan: form.value.kebutuhan,
+    status_kepegawaian: form.value.status_kepegawaian,
+    sistem_kerja: form.value.sistem_kerja,
+    buka: form.value.tanggal_buka,
     tutup: form.value.tanggal_tutup,
+    publish: form.value.publish,
+    keterangan: form.value.keterangan,
     status: form.value.status_lowongan,
   });
 

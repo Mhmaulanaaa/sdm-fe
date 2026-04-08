@@ -10,39 +10,48 @@ useHead({
   title: "Edit Syarat",
 });
 
-// ✅ FORM sama seperti CREATE
+// ✅ FORM HARUS SAMA DENGAN CREATE
 const form = ref({
   id: 0,
   nama: "",
   deskripsi: "",
-  syarat: "",
+  tipe: "", // ✅ FIX (bukan syarat)
   wajib: "",
   status: "",
   no_urut: 1,
   publish: "Tidak",
 });
 
-onMounted(() => {
-  loadData();
+// ✅ LOAD DATA (ASYNC FIX)
+onMounted(async () => {
+  await loadData();
 
-  const data = syarat.value.find((i) => i.id === Number(route.params.id));
+  const data = syarat.value.find((i: any) => Number(i.id) === Number(route.params.id));
 
-  if (data) {
-    form.value = {
-      ...form.value,
-      ...data,
-    };
-  }
+  console.log("DATA SYARAT:", data);
+
+  if (!data) return;
+
+  form.value = {
+    id: data.id ?? 0,
+    nama: data.nama ?? "",
+    deskripsi: data.deskripsi ?? "",
+    tipe: data.tipe ?? "", // ✅ FIX
+    wajib: data.wajib ?? "",
+    status: data.status ?? "",
+    no_urut: data.no_urut ?? 1,
+    publish: data.publish ?? "Tidak",
+  };
 });
 
-// ✅ UPDATE (bukan add)
+// ✅ UPDATE
 const submitForm = () => {
   if (!form.value.id) return;
 
   updateSyarat(form.value.id, {
     nama: form.value.nama,
     deskripsi: form.value.deskripsi,
-    syarat: form.value.syarat,
+    tipe: form.value.tipe,
     wajib: form.value.wajib,
     status: form.value.status,
     no_urut: form.value.no_urut,
@@ -52,9 +61,7 @@ const submitForm = () => {
   router.push("/master/karir/syarat");
 };
 
-const goBack = () => {
-  router.back();
-};
+const goBack = () => router.back();
 </script>
 
 <template>
@@ -113,13 +120,13 @@ const goBack = () => {
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Tipe Syarat</label>
           <select
-            v-model="form.syarat"
+            v-model="form.tipe"
             class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
           >
             <option value="">Pilih</option>
-            <option>Text</option>
-            <option>File</option>
-            <option>Select</option>
+            <option value="Text">Text</option>
+            <option value="File">File</option>
+            <option value="Select">Select</option>
           </select>
         </div>
 

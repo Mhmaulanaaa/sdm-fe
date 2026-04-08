@@ -10,7 +10,13 @@ useHead({
   title: "Edit Lowongan",
 });
 
-// ✅ FORM sama seperti CREATE
+// ✅ HELPER FORMAT DATE (WAJIB)
+const formatDate = (val: string) => {
+  if (!val) return "";
+  return val.includes("T") ? val.split("T")[0] : val;
+};
+
+// ✅ DEFAULT FORM
 const form = ref({
   id: 0,
   kode: "",
@@ -28,37 +34,70 @@ const form = ref({
   keterangan: "",
 });
 
-onMounted(() => {
-  loadData();
+// ✅ LOAD DATA
+onMounted(async () => {
+  await loadData();
 
-  const data = lowongan.value.find((i) => i.id === Number(route.params.id));
+  const id = Number(route.params.id);
 
-  if (data) {
-    form.value = {
-      ...form.value,
-      ...data,
-      tanggal_tutup: data.tutup, // mapping penting
-      status_lowongan: data.status,
-    };
-  }
+  const data = lowongan.value.find((i: any) => i.id === id);
+
+  console.log("DATA API:", data);
+
+  if (!data) return;
+
+  form.value = {
+    id: data.id ?? 0,
+    kode: data.kode ?? "",
+    nama: data.nama ?? "",
+    unit: data.unit ?? "",
+    kelompok: data.kelompok ?? "",
+    kategori: data.kategori ?? "",
+    kebutuhan: data.kebutuhan ?? 1,
+
+    status_kepegawaian: data.status_kepegawaian ?? data.statusKepegawaian ?? "",
+
+    sistem_kerja: data.sistem_kerja ?? data.sistemKerja ?? "",
+
+    tanggal_buka: "" + formatDate(data.buka ?? data.tanggal_buka ?? ""),
+    tanggal_tutup: "" + formatDate(data.tutup ?? data.tanggal_tutup ?? ""),
+
+    status_lowongan: data.status ?? "Draft",
+
+    publish: data.publish ?? data.is_publish ?? "Tidak",
+
+    keterangan: data.keterangan ?? "",
+  };
+
+  console.log("FORM:", form.value);
 });
 
-// ✅ UPDATE (bukan add)
+// ✅ SUBMIT
 const submitForm = () => {
-  if (!form.value.id) return;
+  if (!form.value.id) {
+    alert("ID tidak ditemukan!");
+    return;
+  }
 
   updateLowongan(form.value.id, {
     kode: form.value.kode,
     nama: form.value.nama,
     unit: form.value.unit,
+    kelompok: form.value.kelompok,
+    kategori: form.value.kategori,
     kebutuhan: form.value.kebutuhan,
+    status_kepegawaian: form.value.status_kepegawaian,
+    sistem_kerja: form.value.sistem_kerja,
+    buka: form.value.tanggal_buka,
     tutup: form.value.tanggal_tutup,
     status: form.value.status_lowongan,
+    publish: form.value.publish,
+    keterangan: form.value.keterangan,
   });
 
   router.push("/master/karir/lowongan");
 };
-
+// ✅ BACK
 const goBack = () => {
   router.back();
 };

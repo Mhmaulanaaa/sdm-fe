@@ -10,6 +10,11 @@ useHead({
   title: "Edit Pengumuman",
 });
 
+const formatDate = (val: string | undefined) => {
+  if (!val) return "";
+  return val.includes("T") ? val.split("T")[0] : val;
+};
+
 // ✅ FORM sama seperti CREATE
 const form = ref({
   id: 0,
@@ -18,17 +23,21 @@ const form = ref({
   status: "",
 });
 
-onMounted(() => {
-  loadData();
+onMounted(async () => {
+  await loadData();
 
-  const data = pengumuman.value.find((i) => i.id === Number(route.params.id));
+  const data = pengumuman.value.find(
+    (i: any) => Number(i.id) === Number(route.params.id)
+  );
 
-  if (data) {
-    form.value = {
-      ...form.value,
-      ...data,
-    };
-  }
+  if (!data) return;
+
+  form.value = {
+    id: data.id ?? 0,
+    judul: data.judul ?? "",
+    tanggalpublish: "" + formatDate(data.tanggalpublish),
+    status: data.status ?? "",
+  };
 });
 
 // ✅ UPDATE (bukan add)
@@ -96,7 +105,7 @@ const goBack = () => {
           <label class="text-sm text-gray-600 dark:text-gray-300">Tanggal Publish</label>
           <input
             v-model="form.tanggalpublish"
-            type="text"
+            type="date"
             class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
           />
         </div>

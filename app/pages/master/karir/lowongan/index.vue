@@ -29,8 +29,10 @@ const filteredData = computed(() => {
 
 const tableData = computed(() => lowongan.value || []);
 
-onMounted(() => {
-  loadData();
+onMounted(async () => {
+  // console.log("LOAD JALAN");
+  await loadData();
+  // console.log("DATA LOWONGAN:", lowongan.value);
 });
 </script>
 
