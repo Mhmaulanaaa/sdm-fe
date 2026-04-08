@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 const search = ref("");
 const statusFilter = ref("");
 useHead({
   title: "Data Ijin - SDM Admin",
+});
+
+definePageMeta({
+  breadcrumb: [
+    { label: "Home", to: "/dashboard" },
+    { label: "Data", to: "/data" },
+    { label: "Ijin" },
+  ],
 });
 
 const filteredData = computed(() => {
@@ -112,6 +121,10 @@ const tableData = [
 </script>
 
 <template>
+  <div class="mb-4">
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Data Ijin</h1>
+    <AppBreadcrumb />
+  </div>
   <!-- Stats -->
   <div class="p-6 mb-5 bg-white dark:bg-slate-800 space-y-3 rounded-2xl">
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5">

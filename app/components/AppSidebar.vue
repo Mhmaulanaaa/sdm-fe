@@ -80,17 +80,17 @@ const menus: Menu[] = [
       {
         name: "Laporan",
         icon: "heroicons:document-text",
-        to: "/data-laporan",
+        to: "/data/laporan",
       },
       {
         name: "Jadwal Dokter PKS",
         icon: "heroicons:clock",
-        to: "/data-jadwal-dokter-pks",
+        to: "/data/jadwaldokterpks",
       },
       {
         name: "Verifikasi Wajah",
         icon: "heroicons:face-smile",
-        to: "/data-verifikasi-wajah",
+        to: "/data/verifikasiwajah",
       },
     ],
   },

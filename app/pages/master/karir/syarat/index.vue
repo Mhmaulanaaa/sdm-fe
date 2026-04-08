@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 const search = ref("");
 const selectedDate = ref("");
 useHead({
   title: "Syarat Lowongan - SDM Admin",
+});
+
+definePageMeta({
+  breadcrumb: [
+    { label: "Home", to: "/dashboard" },
+    { label: "Karir", to: "/master/karir" },
+    { label: "Syarat" },
+  ],
 });
 
 const router = useRouter();
@@ -37,8 +46,10 @@ onMounted(() => {
 <template>
   <!-- Table -->
   <div class="mb-4">
-    <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Syarat</h1>
-    <p class="text-sm text-gray-400">Master - Karir - Syarat</p>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+      Master Syarat
+    </h1>
+    <AppBreadcrumb />
   </div>
   <div
     class="bg-white dark:bg-slate-800 p-5 rounded-2xl min-h-screen shadow-sm border border-gray-100 dark:border-slate-700 mt-5"

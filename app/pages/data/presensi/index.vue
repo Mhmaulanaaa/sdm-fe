@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 const search = ref("");
 const selectedDate = ref("");
 useHead({
   title: "Data Presensi - SDM Admin",
+});
+
+definePageMeta({
+  breadcrumb: [
+    { label: "Home", to: "/dashboard" },
+    { label: "Data", to: "/data" },
+    { label: "Presensi" },
+  ],
 });
 
 const filteredData = computed(() => {
@@ -59,6 +68,10 @@ const tableData = [
 </script>
 
 <template>
+  <div class="mb-4">
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Data Presensi</h1>
+    <AppBreadcrumb />
+  </div>
   <!-- Table -->
   <div
     class="bg-white dark:bg-slate-800 p-5 rounded-2xl min-h-screen shadow-sm border border-gray-100 dark:border-slate-700 mt-5"

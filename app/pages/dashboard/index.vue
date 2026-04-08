@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 definePageMeta({
   layout: "default",
+  breadcrumb: [
+    { label: "Home", to: "/dashboard" },
+    { label: "Dashboard", to: "/dashboard" },
+  ],
 });
 
 useHead({
@@ -178,8 +183,8 @@ const tableData = Array.from({ length: 7 }, (_, i) => ({
 <template>
   <!-- ================= HEADER ================= -->
   <div class="mb-4">
-    <h1 class="text-xl font-bold text-gray-800 dark:text-white">Dashboard</h1>
-    <p class="text-sm text-gray-500">Home - Dashboard</p>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Dashboard</h1>
+    <AppBreadcrumb />
   </div>
   <!-- ================= TOP CARDS ================= -->
   <div class="p-6 mb-5 bg-white dark:bg-slate-800 space-y-3 rounded-2xl">

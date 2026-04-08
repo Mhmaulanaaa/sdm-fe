@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 
 useHead({
   title: "Lamaran Lowongan - SDM Admin",
 });
 
-// 🔥 SEARCH
+definePageMeta({
+  breadcrumb: [
+    { label: "Home", to: "/dashboard" },
+    { label: "Karir", to: "/master/karir" },
+    { label: "Lamaran" },
+  ],
+});
+
 const search = ref("");
 
-// 🔥 DATA DUMMY LAMARAN
 const tableData = ref([
   {
     id: 1,
@@ -51,10 +58,11 @@ const filteredData = computed(() => {
 
 <template>
   <div class="mb-4">
-    <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Lamaran</h1>
-    <p class="text-sm text-gray-400">Master - Karir - Lamaran</p>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+      Master Lamaran
+    </h1>
+    <AppBreadcrumb />
   </div>
-
   <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm mt-5">
     <!-- HEADER -->
     <div class="space-y-4 mb-5">
@@ -71,8 +79,8 @@ const filteredData = computed(() => {
         <input
           v-model="search"
           type="text"
-          placeholder="Cari pelamar..."
-          class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
+          placeholder="Cari Master Lamaran..."
+          class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
         />
       </div>
     </div>
