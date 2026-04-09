@@ -3,6 +3,12 @@ import { ref, computed, onMounted } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 const search = ref("");
 const selectedDate = ref("");
+
+// Define options for labels
+const unitOptions = ref<Array<{ value: string; label: string }>>([]);
+const kelompokOptions = ref<Array<{ value: string; label: string }>>([]);
+const statusKepegawaianOptions = ref<Array<{ value: string; label: string }>>([]);
+const statusLowonganOptions = ref<Array<{ value: string; label: string }>>([]);
 useHead({
   title: "Karir Lowongan - SDM Admin",
 });
@@ -39,9 +45,44 @@ const filteredData = computed(() => {
 const tableData = computed(() => lowongan.value || []);
 
 onMounted(async () => {
-  // console.log("LOAD JALAN");
   await loadData();
-  // console.log("DATA LOWONGAN:", lowongan.value);
+  const normalize = (val: any) => {
+    return typeof val === "object" ? val.value : val;
+  };
+  unitOptions.value = [
+    { label: "IGD", value: "igd" },
+    { label: "Poli Umum", value: "poli_umum" },
+    { label: "Radiologi", value: "radiologi" },
+  ];
+
+  kelompokOptions.value = [
+    { label: "Psikologi Klinis", value: "psikologi_klinis" },
+    { label: "Kefarmasian", value: "kefarmasian" },
+    { label: "Kesehatan Masyarakat", value: "kesehatan_masyarakat" },
+  ];
+
+  statusKepegawaianOptions.value = [
+    { label: "PNS", value: "pns" },
+    { label: "Non-PNS", value: "non_pns" },
+    { label: "Kontrak", value: "kontrak" },
+  ];
+
+  statusLowonganOptions.value = [
+    { label: "Buka", value: "Buka" },
+    { label: "Tutup", value: "Tutup" },
+    { label: "Draft", value: "Draft" },
+  ];
+
+  lowongan.value = lowongan.value.map((item: any) => ({
+    ...item,
+    unit_label:
+      unitOptions.value.find((opt) => opt.value === normalize(item.unit))?.label ||
+      normalize(item.unit),
+    statuslowongan_label:
+      statusLowonganOptions.value.find((opt) => opt.value === normalize(item.status))
+        ?.label || normalize(item.status),
+  }));
+  console.log("Loaded lowongan:", lowongan.value);
 });
 </script>
 
@@ -127,7 +168,7 @@ onMounted(async () => {
 
             <!-- UNIT -->
             <td class="px-2 text-xs text-gray-500">
-              {{ row.unit }}
+              {{ row.unit_label }}
             </td>
 
             <!-- KEBUTUHAN -->
@@ -145,12 +186,12 @@ onMounted(async () => {
               <span
                 :class="[
                   'px-2 py-1 rounded-full text-xs font-medium',
-                  row.status === 'Aktif'
+                  row.statuslowongan_label === 'Aktif'
                     ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                     : 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300',
                 ]"
               >
-                {{ row.status }}
+                {{ row.statuslowongan_label }}
               </span>
             </td>
 

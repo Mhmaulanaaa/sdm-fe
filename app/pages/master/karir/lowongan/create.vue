@@ -1,24 +1,68 @@
 <script setup lang="ts">
 import { ref } from "vue";
-
+import BaseInput from "~/components/form/BaseInput.vue";
+import BaseNumber from "~/components/form/BaseNumber.vue";
+import BaseTextArea from "~/components/form/BaseTextArea.vue";
+import BaseDatePicker from "~/components/form/BaseDatePicker.vue";
 const { addLowongan } = useLowongan();
 useHead({
   title: "Tambah Lowongan",
 });
 
+// Diatas Function Search dan Select2 Coba-Coba
+
+const unitOptions = [
+  { label: "IGD", value: "IGD" },
+  { label: "Poli Umum", value: "Poli Umum" },
+  { label: "Radiologi", value: "Radiologi" },
+];
+
+const kelompokOptions = [
+  { label: "Psikologi Klinis", value: "Psikologi Klinis" },
+  { label: "Kefarmasian", value: "Kefarmasian" },
+  { label: "Kesehatan Masyarakat", value: "Kesehatan Masyarakat" },
+];
+
+const statusKepegawaianOptions = [
+  { label: "PNS", value: "PNS" },
+  { label: "Non-PNS", value: "Non-PNS" },
+  { label: "Kontrak", value: "Kontrak" },
+  { label: "BLUD", value: "BLUD" },
+  { label: "Magang", value: "Magang" },
+];
+
+const sistemKerjaOptions = [
+  { label: "WFH", value: "WFH" },
+  { label: "WFO", value: "WFO" },
+  { label: "Hybrid", value: "Hybrid" },
+];
+
+const statusLowonganOptions = [
+  { label: "Buka", value: "Buka" },
+  { label: "Tutup", value: "Tutup" },
+  { label: "Draft", value: "Draft" },
+];
+
+const publishOptions = [
+  { label: "Ya", value: "Ya" },
+  { label: "Tidak", value: "Tidak" },
+];
+
 const form = ref({
+  namasaya: "",
+  pilihan: undefined,
   kode: "",
   nama: "",
-  unit: "",
-  kelompok: "",
+  unit: undefined,
+  kelompok: undefined,
   kategori: "",
-  kebutuhan: 1,
-  status_kepegawaian: "",
-  sistem_kerja: "",
+  kebutuhan: 0,
+  status_kepegawaian: undefined,
+  sistem_kerja: undefined,
   tanggal_buka: "",
   tanggal_tutup: "",
-  status_lowongan: "Draft",
-  publish: "Tidak",
+  status_lowongan: undefined,
+  publish: undefined,
   keterangan: "",
 });
 
@@ -26,6 +70,8 @@ const router = useRouter();
 
 const submitForm = () => {
   addLowongan({
+    namasaya: form.value.namasaya,
+    pilihan: form.value.pilihan,
     kode: form.value.kode,
     nama: form.value.nama,
     unit: form.value.unit,
@@ -82,71 +128,64 @@ const goBack = () => {
 
       <!-- FORM -->
       <div class="grid md:grid-cols-2 gap-4">
+        <!-- FORM DATA -->
         <!-- KODE -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Kode Lowongan</label>
-          <input
+          <BaseInput
             v-model="form.kode"
-            type="text"
+            label="Kode Lowongan"
             placeholder="Contoh: LWG001"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
           />
         </div>
 
         <!-- NAMA -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Nama Lowongan</label>
-          <input
+          <BaseInput
             v-model="form.nama"
-            type="text"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
+            label="Nama Lowongan"
+            placeholder="Contoh: Staff Administrasi"
           />
         </div>
 
         <!-- UNIT -->
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Unit Kerja</label>
-          <select
+          <USelectMenu
+            label="Unit Kerja"
+            placeholder="Pilih Unit Kerja"
             v-model="form.unit"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option value="">Pilih Unit</option>
-            <option>IGD</option>
-            <option>Poli Umum</option>
-          </select>
+            :items="unitOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
 
         <!-- KELOMPOK -->
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Kelompok Pegawai</label>
-          <select
+          <USelectMenu
+            label="Kelompok Pegawai"
+            placeholder="Pilih Kelompok Pegawai"
             v-model="form.kelompok"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option value="">Pilih</option>
-            <option>Psikologi Klinis</option>
-            <option>Kefarmasian</option>
-            <option>Kesehatan Masyarakat</option>
-          </select>
+            :items="kelompokOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
 
         <!-- KATEGORI -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Kategori</label>
-          <input
+          <BaseInput
             v-model="form.kategori"
-            type="text"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
+            label="Kategori"
+            placeholder="Contoh: Psikologi Klinis"
           />
         </div>
 
         <!-- KEBUTUHAN -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Jumlah Kebutuhan</label>
-          <input
+          <BaseNumber
             v-model="form.kebutuhan"
-            type="number"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
+            label="Kebutuhan"
+            placeholder="Contoh: 5"
           />
         </div>
 
@@ -155,88 +194,68 @@ const goBack = () => {
           <label class="text-sm text-gray-600 dark:text-gray-300"
             >Status Kepegawaian</label
           >
-          <select
+          <USelectMenu
+            label="Status Kepegawaian"
+            placeholder="Pilih Status Kepegawaian"
             v-model="form.status_kepegawaian"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option value="">Pilih</option>
-            <option>PNS</option>
-            <option>BLUD</option>
-            <option>CPNS</option>
-            <option>Outsorcing</option>
-            <option>Tenaga Ahli</option>
-          </select>
+            :items="statusKepegawaianOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
 
         <!-- SISTEM KERJA -->
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Sistem Kerja</label>
-          <select
+          <USelectMenu
+            label="Sistem Kerja"
+            placeholder="Pilih Sistem Kerja"
             v-model="form.sistem_kerja"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option value="">Pilih</option>
-            <option>WFH</option>
-            <option>WFO</option>
-            <option>Hybrid</option>
-          </select>
+            :items="sistemKerjaOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
 
         <!-- TANGGAL -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Tanggal Buka</label>
-          <input
-            v-model="form.tanggal_buka"
-            type="date"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          />
+          <BaseDatePicker v-model="form.tanggal_buka" label="Tanggal Buka" />
         </div>
 
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300">Tanggal Tutup</label>
-          <input
-            v-model="form.tanggal_tutup"
-            type="date"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          />
+          <BaseDatePicker v-model="form.tanggal_tutup" label="Tanggal Tutup" />
         </div>
 
         <!-- STATUS LOWONGAN -->
         <div>
           <label class="text-sm text-gray-600 dark:text-gray-300">Status Lowongan</label>
-          <select
+          <USelectMenu
+            label="Status Lowongan"
+            placeholder="Pilih Status Lowongan"
             v-model="form.status_lowongan"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option>Buka</option>
-            <option>Tutup</option>
-            <option>Draft</option>
-          </select>
+            :items="statusLowonganOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
 
         <!-- PUBLISH -->
         <div>
-          <label class="text-sm text-gray-600 dark:text-gray-300"
-            >Publish ke Publik?</label
-          >
-          <select
+          <label class="text-sm text-gray-600 dark:text-gray-300">Publik</label>
+          <USelectMenu
+            label="Publik"
+            placeholder="Pilih Publik"
             v-model="form.publish"
-            class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-          >
-            <option>Tidak</option>
-            <option>Ya</option>
-          </select>
+            :items="publishOptions"
+            class="w-48 w-full px-3 py-2 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
         </div>
       </div>
 
       <!-- KETERANGAN -->
       <div class="mt-4">
-        <label class="text-sm text-gray-600 dark:text-gray-300">Keterangan</label>
-        <textarea
+        <BaseTextArea
           v-model="form.keterangan"
-          rows="4"
-          class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-        ></textarea>
+          label="Keterangan"
+          placeholder="Masukkan keterangan tambahan"
+        />
       </div>
     </div>
   </div>
