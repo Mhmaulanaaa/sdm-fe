@@ -62,7 +62,6 @@ const formatDate = (val: string): string => {
   return val.includes("T") ? (val.split("T")[0] ?? "") : val;
 };
 
-// 🔥 FORM
 const form = ref({
   id: 0,
   kode: "",
@@ -80,7 +79,6 @@ const form = ref({
   keterangan: "",
 });
 
-// 🔥 LOAD DATA
 onMounted(async () => {
   await loadData();
 

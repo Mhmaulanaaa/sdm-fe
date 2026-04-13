@@ -1,8 +1,18 @@
 <script setup lang="ts">
+import { alert } from "#build/ui";
 import { ref, computed } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
+import BaseSearch from "~/components/form/BaseSearch.vue";
+const router = useRouter();
 const search = ref("");
-const statusFilter = ref("");
+const { ijin, loadData, deleteIjin } = useIjin();
+const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
+const pegawaiOptions = ref<Array<{ label: string; value: string }>>([]);
+const modelIjinOptions = ref<Array<{ label: string; value: string }>>([]);
+const jenisIjinOptions = ref<Array<{ label: string; value: string }>>([]);
+const tipeIjinOptions = ref<Array<{ label: string; value: string }>>([]);
+const shiftKerjaOptions = ref<Array<{ label: string; value: string }>>([]);
+const statusApprovalOptions = ref<Array<{ label: string; value: string }>>([]);
 useHead({
   title: "Data Ijin - SDM Admin",
 });
@@ -15,16 +25,29 @@ definePageMeta({
   ],
 });
 
+const filterOptions = [
+  { label: "Semua", value: "" },
+  { label: "Disetujui", value: "disetujui" },
+  { label: "Belum Disetujui", value: "belum disetujui" },
+  { label: "Ditolak", value: "ditolak" },
+];
+
+const goToTambah = () => {
+  router.push("/data/ijin/create");
+};
+
 const filteredData = computed(() => {
-  return tableData.filter((item) => {
+  return tableData.value.filter((item) => {
+    const keyword = search.value.toLowerCase();
+    const status = statusFilter.value?.value?.toLowerCase() || "";
+
     const matchSearch =
       !search.value ||
-      item.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      item.nama_ijin.toLowerCase().includes(search.value.toLowerCase()) ||
-      item.approval.toLowerCase().includes(search.value.toLowerCase());
+      item.name.toLowerCase().includes(keyword) ||
+      item.nama_ijin.toLowerCase().includes(keyword) ||
+      item.approval.toLowerCase().includes(keyword);
 
-    const matchStatus =
-      !statusFilter.value || item.approval?.toLowerCase() === statusFilter.value;
+    const matchStatus = !status || item.approval.toLowerCase() === status;
 
     return matchSearch && matchStatus;
   });
@@ -56,68 +79,73 @@ const stats = [
   },
 ];
 
-const tableData = [
-  {
-    name: "Ahmad Fauzi",
-    nama_ijin: "Cuti Tahunan",
-    tipe: "Cuti",
-    jenis: "Tahunan",
-    alasan: "Liburan keluarga",
-    approval: "Disetujui",
-    start: "2026-04-01",
-    end: "2026-04-05",
-  },
-  {
-    name: "Siti Rahma",
-    nama_ijin: "Ijin Sakit",
-    tipe: "Ijin",
-    jenis: "Sakit",
-    alasan: "Demam tinggi",
-    approval: "Belum Disetujui",
-    start: "2026-04-03",
-    end: "2026-04-04",
-  },
-  {
-    name: "Budi Santoso",
-    nama_ijin: "Cuti Besar",
-    tipe: "Cuti",
-    jenis: "Besar",
-    alasan: "Keperluan pribadi",
-    approval: "Ditolak",
-    start: "2026-04-10",
-    end: "2026-04-15",
-  },
-  {
-    name: "Dewi Lestari",
-    nama_ijin: "Ijin Melahirkan",
-    tipe: "Ijin",
-    jenis: "Melahirkan",
-    alasan: "Persiapan persalinan",
-    approval: "Disetujui",
-    start: "2026-04-02",
-    end: "2026-06-02",
-  },
-  {
-    name: "Rizky Pratama",
-    nama_ijin: "Cuti Tahunan",
-    tipe: "Cuti",
-    jenis: "Tahunan",
-    alasan: "Acara keluarga",
-    approval: "Belum Disetujui",
-    start: "2026-04-07",
-    end: "2026-04-09",
-  },
-  {
-    name: "Lina Marlina",
-    nama_ijin: "Ijin Setengah Hari",
-    tipe: "Ijin",
-    jenis: "Pribadi",
-    alasan: "Urusan bank",
-    approval: "Disetujui",
-    start: "2026-04-06",
-    end: "2026-04-06",
-  },
-];
+const tableData = computed(() => ijin.value || []);
+
+onMounted(async () => {
+  await loadData();
+
+  const normalize = (val: any) => {
+    return typeof val === "object" ? val.value : val;
+  };
+
+  const pegawaiOptions = [
+    { label: "John Doe", value: "John Doe" },
+    { label: "Jane Smith", value: "Jane Smith" },
+    { label: "Michael Johnson", value: "Michael Johnson" },
+  ];
+
+  const modelIjinOptions = [
+    { label: "Model A", value: "Model A" },
+    { label: "Model B", value: "Model B" },
+    { label: "Model C", value: "Model C" },
+  ];
+
+  const jenisIjinOptions = [
+    { label: "Sakit", value: "Sakit" },
+    { label: "Cuti", value: "Cuti" },
+    { label: "Ijin Lainnya", value: "Ijin Lainnya" },
+  ];
+
+  const tipeIjinOptions = [
+    { label: "Tipe 1", value: "Tipe 1" },
+    { label: "Tipe 2", value: "Tipe 2" },
+    { label: "Tipe 3", value: "Tipe 3" },
+  ];
+
+  const shiftKerjaOptions = [
+    { label: "Pagi", value: "Pagi" },
+    { label: "Siang", value: "Siang" },
+    { label: "Malam", value: "Malam" },
+  ];
+
+  const statusApprovalOptions = [
+    { label: "Disetujui", value: "Disetujui" },
+    { label: "Belum Disetujui", value: "Belum Disetujui" },
+    { label: "Ditolak", value: "Ditolak" },
+  ];
+
+  ijin.value = ijin.value.map((item: any) => ({
+    ...item,
+    nama_pegawai:
+      pegawaiOptions.find((opt) => opt.value === normalize(item.nama_pegawai))?.label ||
+      normalize(item.nama_pegawai),
+    nama_ijin:
+      modelIjinOptions.find((opt) => opt.value === normalize(item.nama_ijin))?.label ||
+      normalize(item.nama_ijin),
+    tipe_ijin:
+      tipeIjinOptions.find((opt) => opt.value === normalize(item.tipe_ijin))?.label ||
+      normalize(item.tipe_ijin),
+    jenis_ijin:
+      jenisIjinOptions.find((opt) => opt.value === normalize(item.jenis_ijin))?.label ||
+      normalize(item.jenis_ijin),
+    shift_kerja:
+      shiftKerjaOptions.find((opt) => opt.value === normalize(item.shift_kerja))?.label ||
+      normalize(item.shift_kerja),
+    approval:
+      statusApprovalOptions.find((opt) => opt.value === normalize(item.approval))
+        ?.label || normalize(item.approval),
+  }));
+});
 </script>
 
 <template>
@@ -151,32 +179,24 @@ const tableData = [
       <!-- RIGHT (SEARCH + FILTER + BUTTON) -->
       <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
         <!-- SEARCH -->
-        <div class="relative w-full md:w-64">
-          <UIcon
-            name="heroicons:magnifying-glass"
-            class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          />
-          <input
-            v-model="search"
-            type="text"
-            placeholder="Cari pegawai..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
-          />
+        <div class="relative">
+          <BaseSearch v-model="search" class="" />
         </div>
 
         <!-- FILTER -->
-        <select
-          v-model="statusFilter"
-          class="px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
-        >
-          <option value="">Semua Status</option>
-          <option value="disetujui">Disetujui</option>
-          <option value="ditolak">Ditolak</option>
-          <option value="belum disetujui">Belum Disetujui</option>
-        </select>
+        <div>
+          <USelectMenu
+            label="Status Approval"
+            placeholder="Pilih Status"
+            v-model="statusFilter"
+            :items="filterOptions"
+            class="w-48 w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
+          />
+        </div>
 
         <!-- BUTTON TAMBAH -->
         <button
+          @click="goToTambah"
           class="flex items-center justify-center gap-1 px-4 py-2 rounded-xl bg-green-600 text-white text-sm hover:bg-green-700 transition"
         >
           <UIcon name="heroicons:plus" class="w-4 h-4" />
@@ -216,7 +236,7 @@ const tableData = [
             </td>
 
             <td class="px-2 text-gray-700 dark:text-slate-200 text-xs">
-              {{ row.name }}
+              {{ row.nama_pegawai }}
             </td>
 
             <td class="px-2 text-xs">
@@ -224,11 +244,11 @@ const tableData = [
             </td>
 
             <td class="px-2 text-xs">
-              {{ row.tipe }}
+              {{ row.tipe_ijin }}
             </td>
 
             <td class="px-2 text-xs">
-              {{ row.jenis }}
+              {{ row.jenis_ijin }}
             </td>
 
             <td class="px-2 text-xs text-gray-500">
@@ -252,11 +272,11 @@ const tableData = [
             </td>
 
             <td class="px-2 text-xs">
-              {{ row.start }}
+              {{ row.tanggal_mulai }}
             </td>
 
             <td class="px-2 text-xs">
-              {{ row.end }}
+              {{ row.tanggal_selesai }}
             </td>
 
             <!-- AKSI -->
@@ -264,6 +284,7 @@ const tableData = [
               <div class="flex justify-center items-center gap-2">
                 <!-- EDIT -->
                 <button
+                  @click="$router.push(`/data/ijin/edit/${row.id}`)"
                   class="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition"
                   title="Edit"
                 >
@@ -286,6 +307,13 @@ const tableData = [
                   <UIcon name="heroicons:document-text" class="w-4 h-4 text-purple-500" />
                 </button>
               </div>
+            </td>
+          </tr>
+
+          <!-- EMPTY -->
+          <tr v-if="filteredData.length === 0">
+            <td colspan="8" class="text-center py-5 text-gray-400">
+              Data tidak ditemukan
             </td>
           </tr>
         </tbody>
