@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { alert } from "#build/ui";
 import { ref, computed } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
+
 const router = useRouter();
 const search = ref("");
-const { ijin, loadData, deleteIjin } = useIjin();
+const { ijin, loadData, deleteIjin, updateIjin } = useIjin();
 const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
 const pegawaiOptions = ref<Array<{ label: string; value: string }>>([]);
 const modelIjinOptions = ref<Array<{ label: string; value: string }>>([]);
@@ -24,6 +24,25 @@ definePageMeta({
     { label: "Ijin" },
   ],
 });
+
+const approveIjin = (row: any) => {
+  if (row.approval === "Disetujui") return;
+
+  updateIjin(row.id, {
+    approval: "Disetujui",
+  });
+};
+
+const showLaporan = (row: any) => {
+  window.alert(`
+Nama: ${row.nama_pegawai}
+Ijin: ${row.nama_ijin}
+Jenis: ${row.jenis_ijin}
+Alasan: ${row.alasan}
+Status: ${row.approval}
+Tanggal: ${row.tanggal_mulai} - ${row.tanggal_selesai}
+  `);
+};
 
 const filterOptions = [
   { label: "Semua", value: "" },
@@ -52,10 +71,10 @@ const filteredData = computed(() => {
     return matchSearch && matchStatus;
   });
 });
-const stats = [
+const stats = computed(() => [
   {
     title: "Total Ijin",
-    value: 125,
+    value: tableData.value.length,
     icon: "i-lucide-calendar-check",
     color: "emerald",
     bgGradient: "from-emerald-500/20 to-emerald-600/10",
@@ -63,7 +82,7 @@ const stats = [
   },
   {
     title: "Disetujui",
-    value: 98,
+    value: tableData.value.filter((i) => i.approval === "Disetujui").length,
     icon: "i-lucide-check-circle",
     color: "blue",
     bgGradient: "from-blue-500/20 to-blue-600/10",
@@ -71,13 +90,13 @@ const stats = [
   },
   {
     title: "Belum Disetujui",
-    value: 27,
+    value: tableData.value.filter((i) => i.approval === "Belum Disetujui").length,
     icon: "i-lucide-clock",
     color: "amber",
     bgGradient: "from-amber-500/20 to-amber-600/10",
     iconColor: "text-amber-600 dark:text-amber-400",
   },
-];
+]);
 
 const tableData = computed(() => ijin.value || []);
 
@@ -293,6 +312,8 @@ onMounted(async () => {
 
                 <!-- CHECKLIST -->
                 <button
+                  @click="approveIjin(row)"
+                  :disabled="row.approval === 'Disetujui'"
                   class="p-2 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition"
                   title="Checklist"
                 >
@@ -301,6 +322,7 @@ onMounted(async () => {
 
                 <!-- LAPORAN -->
                 <button
+                  @click="showLaporan(row)"
                   class="p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition"
                   title="Laporan"
                 >
