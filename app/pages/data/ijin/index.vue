@@ -2,17 +2,21 @@
 import { ref, computed } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
-
+import BaseModal from "~/components/form/BaseModal.vue";
 const router = useRouter();
 const search = ref("");
 const { ijin, loadData, deleteIjin, updateIjin } = useIjin();
-const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
-const pegawaiOptions = ref<Array<{ label: string; value: string }>>([]);
-const modelIjinOptions = ref<Array<{ label: string; value: string }>>([]);
-const jenisIjinOptions = ref<Array<{ label: string; value: string }>>([]);
-const tipeIjinOptions = ref<Array<{ label: string; value: string }>>([]);
-const shiftKerjaOptions = ref<Array<{ label: string; value: string }>>([]);
-const statusApprovalOptions = ref<Array<{ label: string; value: string }>>([]);
+const statusFilter = ref<{ label: string; value: string } | undefined>(
+  undefined,
+);
+
+const showModal = ref(false);
+const selectedData = ref<any>(null);
+
+const showLaporan = (row: any) => {
+  selectedData.value = row;
+  showModal.value = true;
+};
 useHead({
   title: "Data Ijin - SDM Admin",
 });
@@ -31,17 +35,6 @@ const approveIjin = (row: any) => {
   updateIjin(row.id, {
     approval: "Disetujui",
   });
-};
-
-const showLaporan = (row: any) => {
-  window.alert(`
-Nama: ${row.nama_pegawai}
-Ijin: ${row.nama_ijin}
-Jenis: ${row.jenis_ijin}
-Alasan: ${row.alasan}
-Status: ${row.approval}
-Tanggal: ${row.tanggal_mulai} - ${row.tanggal_selesai}
-  `);
 };
 
 const filterOptions = [
@@ -90,7 +83,8 @@ const stats = computed(() => [
   },
   {
     title: "Belum Disetujui",
-    value: tableData.value.filter((i) => i.approval === "Belum Disetujui").length,
+    value: tableData.value.filter((i) => i.approval === "Belum Disetujui")
+      .length,
     icon: "i-lucide-clock",
     color: "amber",
     bgGradient: "from-amber-500/20 to-amber-600/10",
@@ -146,30 +140,33 @@ onMounted(async () => {
   ijin.value = ijin.value.map((item: any) => ({
     ...item,
     nama_pegawai:
-      pegawaiOptions.find((opt) => opt.value === normalize(item.nama_pegawai))?.label ||
-      normalize(item.nama_pegawai),
+      pegawaiOptions.find((opt) => opt.value === normalize(item.nama_pegawai))
+        ?.label || normalize(item.nama_pegawai),
     nama_ijin:
-      modelIjinOptions.find((opt) => opt.value === normalize(item.nama_ijin))?.label ||
-      normalize(item.nama_ijin),
+      modelIjinOptions.find((opt) => opt.value === normalize(item.nama_ijin))
+        ?.label || normalize(item.nama_ijin),
     tipe_ijin:
-      tipeIjinOptions.find((opt) => opt.value === normalize(item.tipe_ijin))?.label ||
-      normalize(item.tipe_ijin),
+      tipeIjinOptions.find((opt) => opt.value === normalize(item.tipe_ijin))
+        ?.label || normalize(item.tipe_ijin),
     jenis_ijin:
-      jenisIjinOptions.find((opt) => opt.value === normalize(item.jenis_ijin))?.label ||
-      normalize(item.jenis_ijin),
+      jenisIjinOptions.find((opt) => opt.value === normalize(item.jenis_ijin))
+        ?.label || normalize(item.jenis_ijin),
     shift_kerja:
-      shiftKerjaOptions.find((opt) => opt.value === normalize(item.shift_kerja))?.label ||
-      normalize(item.shift_kerja),
+      shiftKerjaOptions.find((opt) => opt.value === normalize(item.shift_kerja))
+        ?.label || normalize(item.shift_kerja),
     approval:
-      statusApprovalOptions.find((opt) => opt.value === normalize(item.approval))
-        ?.label || normalize(item.approval),
+      statusApprovalOptions.find(
+        (opt) => opt.value === normalize(item.approval),
+      )?.label || normalize(item.approval),
   }));
 });
 </script>
 
 <template>
   <div class="mb-4">
-    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Data Ijin</h1>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+      Data Ijin
+    </h1>
     <AppBreadcrumb />
   </div>
   <!-- Stats -->
@@ -191,7 +188,9 @@ onMounted(async () => {
     class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 mt-5"
   >
     <!-- HEADER -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+    <div
+      class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"
+    >
       <!-- LEFT -->
       <h3 class="font-semibold text-gray-800 dark:text-white">Data Ijin</h3>
 
@@ -282,8 +281,8 @@ onMounted(async () => {
                   row.approval === 'Disetujui'
                     ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                     : row.approval === 'Belum Disetujui'
-                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
                 ]"
               >
                 {{ row.approval }}
@@ -307,7 +306,10 @@ onMounted(async () => {
                   class="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition"
                   title="Edit"
                 >
-                  <UIcon name="heroicons:pencil-square" class="w-4 h-4 text-blue-500" />
+                  <UIcon
+                    name="heroicons:pencil-square"
+                    class="w-4 h-4 text-blue-500"
+                  />
                 </button>
 
                 <!-- CHECKLIST -->
@@ -317,7 +319,10 @@ onMounted(async () => {
                   class="p-2 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition"
                   title="Checklist"
                 >
-                  <UIcon name="heroicons:check-circle" class="w-4 h-4 text-green-500" />
+                  <UIcon
+                    name="heroicons:check-circle"
+                    class="w-4 h-4 text-green-500"
+                  />
                 </button>
 
                 <!-- LAPORAN -->
@@ -326,7 +331,10 @@ onMounted(async () => {
                   class="p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition"
                   title="Laporan"
                 >
-                  <UIcon name="heroicons:document-text" class="w-4 h-4 text-purple-500" />
+                  <UIcon
+                    name="heroicons:document-text"
+                    class="w-4 h-4 text-purple-500"
+                  />
                 </button>
               </div>
             </td>
@@ -341,5 +349,61 @@ onMounted(async () => {
         </tbody>
       </table>
     </div>
+  </div>
+  <div>
+    <BaseModal v-model="showModal" title="Detail Ijin">
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Nama Pegawai</span>
+          <span class="font-medium">{{ selectedData?.nama_pegawai }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Nama Ijin</span>
+          <span class="font-medium">{{ selectedData?.nama_ijin }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Jenis</span>
+          <span class="font-medium">{{ selectedData?.jenis_ijin }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Tipe</span>
+          <span class="font-medium">{{ selectedData?.tipe_ijin }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Status</span>
+          <span
+            class="px-2 py-1 rounded-full text-xs font-medium"
+            :class="
+              selectedData?.approval === 'Disetujui'
+                ? 'bg-green-100 text-green-700'
+                : selectedData?.approval === 'Belum Disetujui'
+                  ? 'bg-yellow-100 text-yellow-700'
+                  : 'bg-red-100 text-red-700'
+            "
+          >
+            {{ selectedData?.approval }}
+          </span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500 mb-1">Alasan</span>
+          <span class="font-medium">
+            {{ selectedData?.alasan }}
+          </span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Tanggal</span>
+          <span class="font-medium">
+            {{ selectedData?.tanggal_mulai }} -
+            {{ selectedData?.tanggal_selesai }}
+          </span>
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
