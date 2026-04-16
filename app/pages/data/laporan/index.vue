@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
+import BaseSearch from "~/components/form/BaseSearch.vue";
+import BaseDatePicker from "~/components/form/BaseDatePicker.vue";
 const search = ref("");
 const selectedDate = ref("");
 const selectedUnit = ref("");
@@ -24,7 +26,8 @@ const filteredData = computed(() => {
       item.jenispegawai.toLowerCase().includes(search.value.toLowerCase()) ||
       item.unitkerja.toLowerCase().includes(search.value.toLowerCase());
 
-    const matchUnit = !selectedUnit.value || item.unitkerja === selectedUnit.value;
+    const matchUnit =
+      !selectedUnit.value || item.unitkerja === selectedUnit.value;
 
     // karena kamu belum punya waktu → skip dulu
     const matchDate = !selectedDate.value;
@@ -38,32 +41,30 @@ const tableData = [
     nama: "Ahmad Fauzi",
     jenispegawai: "Dokter",
     unitkerja: "IGD",
-    waktu: "2026-04-04",
   },
   {
     nama: "Siti Rahma",
     jenispegawai: "Perawat",
     unitkerja: "Rawat Inap",
-    waktu: "2026-05-04",
   },
   {
     nama: "Budi Santoso",
     jenispegawai: "Dokter",
     unitkerja: "Laboratorium",
-    waktu: "2026-06-04",
   },
   {
     nama: "Dewi Lestari",
     jenispegawai: "Perawat",
     unitkerja: "Poli Umum",
-    waktu: "2026-07-04",
   },
 ];
 </script>
 
 <template>
   <div class="mb-4">
-    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Data Laporan</h1>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+      Data Laporan
+    </h1>
     <AppBreadcrumb />
   </div>
   <!-- Table -->
@@ -74,7 +75,9 @@ const tableData = [
     <div class="space-y-4 mb-5">
       <!-- ROW 1: TITLE + BUTTON -->
       <div class="flex items-center justify-between">
-        <h3 class="font-semibold text-gray-800 dark:text-white">Data Laporan</h3>
+        <h3 class="font-semibold text-gray-800 dark:text-white">
+          Data Laporan
+        </h3>
       </div>
 
       <!-- ROW 2: SEARCH -->
@@ -92,9 +95,13 @@ const tableData = [
       </div>
 
       <!-- ROW 3: FILTER -->
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div
+        class="flex flex-col md:flex-row md:items-end md:justify-between gap-4"
+      >
         <!-- FILTER GROUP -->
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div
+          class="flex flex-col md:flex-row md:items-end md:justify-between gap-4"
+        >
           <div class="flex flex-col md:flex-row gap-4">
             <!-- TANGGAL -->
             <div class="flex flex-col w-full md:w-48">
@@ -172,7 +179,9 @@ const tableData = [
             </td>
 
             <!-- NAMA -->
-            <td class="px-2 text-gray-700 dark:text-slate-200 text-xs font-medium">
+            <td
+              class="px-2 text-gray-700 dark:text-slate-200 text-xs font-medium"
+            >
               {{ row.nama }}
             </td>
 
@@ -193,7 +202,10 @@ const tableData = [
               <button
                 class="px-3 py-1 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs"
               >
-                <UIcon name="heroicons:document-text" class="w-4 h-4 inline-block" />
+                <UIcon
+                  name="heroicons:document-text"
+                  class="w-4 h-4 inline-block"
+                />
               </button>
             </td>
           </tr>
