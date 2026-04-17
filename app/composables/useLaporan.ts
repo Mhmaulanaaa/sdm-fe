@@ -4,8 +4,8 @@ export const useLaporan = () => {
     const normalize = (item: any) => ({
         id: item.id ?? 0,
         nama: item.nama ?? "",
-        jenis_pegawai: item.jenis_pegawai ?? "",
-        unit_kerja: item.unit_kerja ?? "",
+        jenispegawai: item.jenis_pegawai ?? item.jenispegawai ?? "",
+        unitkerja: item.unit_kerja ?? item.unitkerja ?? "",
     });
     // INIT dari localStorage
     const loadData = () => {
@@ -49,10 +49,10 @@ export const useLaporan = () => {
     const updateLaporan = (id: number, newData: any) => {
         laporan.value = laporan.value.map((item) =>
             item.id === id
-                ? {
+                ? normalize({
                     ...item,
                     ...newData,
-                }
+                })
                 : item
         );
 

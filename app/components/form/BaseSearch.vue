@@ -25,7 +25,7 @@ watch(search, (val) => {
 </script>
 
 <template>
-  <div class="relative w-full md:w-80 group">
+  <div class="relative w-full group">
     <!-- ICON -->
     <UIcon
       name="heroicons:magnifying-glass"

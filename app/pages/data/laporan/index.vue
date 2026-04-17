@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseDatePicker from "~/components/form/BaseDatePicker.vue";
 const search = ref("");
 const selectedDate = ref("");
-const selectedUnit = ref("");
+const selectedUnit = ref<{ label: string; value: string } | undefined>(
+  undefined,
+);
+const { laporan, loadData, deleteLaporan, updateLaporan } = useLaporan();
+
 useHead({
   title: "Data Laporan - SDM Admin",
 });
@@ -18,46 +22,37 @@ definePageMeta({
   ],
 });
 
+const filterOptions = [
+  { label: "Semua", value: "" },
+  { label: "IGD", value: "IGD" },
+  { label: "Rawat Inap", value: "Rawat Inap" },
+  { label: "Laboratorium", value: "Laboratorium" },
+  { label: "Poli Umum", value: "Poli Umum" },
+];
+
 const filteredData = computed(() => {
-  return tableData.filter((item) => {
+  return tableData.value.filter((item) => {
     const matchSearch =
       !search.value ||
-      item.nama.toLowerCase().includes(search.value.toLowerCase()) ||
-      item.jenispegawai.toLowerCase().includes(search.value.toLowerCase()) ||
-      item.unitkerja.toLowerCase().includes(search.value.toLowerCase());
+      (item.nama || "").toLowerCase().includes(search.value.toLowerCase()) ||
+      (item.jenispegawai || "")
+        .toLowerCase()
+        .includes(search.value.toLowerCase()) ||
+      (item.unitkerja || "").toLowerCase().includes(search.value.toLowerCase());
 
     const matchUnit =
-      !selectedUnit.value || item.unitkerja === selectedUnit.value;
+      !selectedUnit.value?.value || item.unitkerja === selectedUnit.value.value;
 
-    // karena kamu belum punya waktu → skip dulu
-    const matchDate = !selectedDate.value;
-
-    return matchSearch && matchUnit && matchDate;
+    return matchSearch && matchUnit;
   });
 });
 
-const tableData = [
-  {
-    nama: "Ahmad Fauzi",
-    jenispegawai: "Dokter",
-    unitkerja: "IGD",
-  },
-  {
-    nama: "Siti Rahma",
-    jenispegawai: "Perawat",
-    unitkerja: "Rawat Inap",
-  },
-  {
-    nama: "Budi Santoso",
-    jenispegawai: "Dokter",
-    unitkerja: "Laboratorium",
-  },
-  {
-    nama: "Dewi Lestari",
-    jenispegawai: "Perawat",
-    unitkerja: "Poli Umum",
-  },
-];
+const tableData = computed(() => laporan.value || []);
+
+onMounted(() => {
+  loadData();
+  console.log(laporan.value);
+});
 </script>
 
 <template>
@@ -82,16 +77,7 @@ const tableData = [
 
       <!-- ROW 2: SEARCH -->
       <div class="relative w-full md:w-80">
-        <UIcon
-          name="heroicons:magnifying-glass"
-          class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-        />
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Cari nama pegawai..."
-          class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none"
-        />
+        <BaseSearch v-model="search" placeholder="Cari nama pegawai..." />
       </div>
 
       <!-- ROW 3: FILTER -->
@@ -105,45 +91,29 @@ const tableData = [
           <div class="flex flex-col md:flex-row gap-4">
             <!-- TANGGAL -->
             <div class="flex flex-col w-full md:w-48">
-              <label class="text-xs mb-1 text-gray-500 dark:text-slate-400">
-                Tanggal
-              </label>
-              <input
+              <BaseDatePicker
                 v-model="selectedDate"
-                type="date"
-                class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm"
+                label="Tanggal"
+                placeholder="Pilih tanggal"
+                class="h-[44px]"
               />
             </div>
 
             <!-- UNIT KERJA -->
-            <div class="flex flex-col w-full md:w-64">
-              <label class="text-xs mb-1 text-gray-500 dark:text-slate-400">
+            <div class="flex flex-col w-full md:w-64 m-2">
+              <label
+                class="text-xs mb-1 text-gray-500 dark:text-slate-400 font-bold"
+              >
                 Unit Kerja
               </label>
 
               <div class="relative">
-                <!-- ICON -->
-                <UIcon
-                  name="heroicons:building-office-2"
-                  class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <!-- SELECT -->
-                <select
+                <USelectMenu
+                  label="Status Approval"
+                  placeholder="Pilih Status"
                   v-model="selectedUnit"
-                  class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none appearance-none"
-                >
-                  <option value="">Semua Unit</option>
-                  <option value="IGD">IGD</option>
-                  <option value="Rawat Inap">Rawat Inap</option>
-                  <option value="Laboratorium">Laboratorium</option>
-                  <option value="Poli Umum">Poli Umum</option>
-                </select>
-
-                <!-- ARROW -->
-                <UIcon
-                  name="heroicons:chevron-down"
-                  class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  :items="filterOptions"
+                  class="w-48 w-full h-[44px] px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
                 />
               </div>
             </div>
