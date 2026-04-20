@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import AppBreadcrumb from "~/components/AppBreadcrumb.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseDatePicker from "~/components/form/BaseDatePicker.vue";
+import BaseModal from "~/components/form/BaseModal.vue";
 const search = ref("");
 const selectedDate = ref("");
 const selectedUnit = ref<{ label: string; value: string } | undefined>(
@@ -21,6 +22,14 @@ definePageMeta({
     { label: "Laporan" },
   ],
 });
+
+const showModal = ref(false);
+const selectedData = ref<any>(null);
+
+const showLaporan = (row: any) => {
+  selectedData.value = row;
+  showModal.value = true;
+};
 
 const filterOptions = [
   { label: "Semua", value: "" },
@@ -170,6 +179,7 @@ onMounted(() => {
             <!-- AKSI -->
             <td class="px-2 text-xs">
               <button
+                @click="showLaporan(row)"
                 class="px-3 py-1 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs"
               >
                 <UIcon
@@ -182,5 +192,23 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
+  </div>
+  <div>
+    <BaseModal v-model="showModal" title="Detail Laporan">
+      <div class="space-y-5 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Nama Pegawai</span>
+          <span class="font-medium">{{ selectedData?.nama }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Jenis Pegawai</span>
+          <span class="font-medium">{{ selectedData?.jenispegawai }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Unit Kerja</span>
+          <span class="font-medium">{{ selectedData?.unitkerja }}</span>
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>

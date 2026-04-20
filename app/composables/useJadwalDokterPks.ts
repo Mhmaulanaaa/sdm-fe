@@ -1,4 +1,38 @@
+import Swal from "sweetalert2";
+
 export const useJadwalDokterPKS = () => {
+
+    const { $toast } = useNuxtApp();
+
+    const confirm = async (options?: {
+        title?: string;
+        text?: string;
+        confirmText?: string;
+        cancelText?: string;
+    }) => {
+        const result = await Swal.fire({
+            title: options?.title || "Yakin?",
+            text: options?.text || "Aksi ini tidak bisa dibatalkan",
+            icon: "warning",
+            showCancelButton: true,
+            width: 400,
+            padding: "0.7rem",
+            confirmButtonColor: "#ef4444",
+            confirmButtonText: options?.confirmText || "Ya",
+            cancelButtonText: options?.cancelText || "Batal",
+
+            customClass: {
+                popup: "rounded-2xl",
+                title: "text-sm",
+                htmlContainer: "text-sm",
+                confirmButton: "text-sm",
+                cancelButton: "text-sm",
+            },
+
+        });
+
+        return result.isConfirmed;
+    };
     // ================= TYPES =================
     type Schedule = {
         id: number;
@@ -46,6 +80,7 @@ export const useJadwalDokterPKS = () => {
             "jadwal_dokter_pks",
             JSON.stringify(schedules.value)
         );
+        $toast.success("Data berhasil disimpan");
     };
 
     const loadData = () => {
@@ -106,9 +141,18 @@ export const useJadwalDokterPKS = () => {
         saveData();
     };
 
-    const deleteSchedule = (id: number) => {
+    const deleteSchedule = async (id: number) => {
+        const ok = await confirm({
+            title: "Hapus data?",
+            text: "Data tidak bisa dikembalikan",
+        });
+
+        if (!ok) return;
+
         schedules.value = schedules.value.filter((i) => i.id !== id);
         saveData();
+
+        $toast.success("Data berhasil dihapus 🗑️");
     };
 
     // ================= UTIL =================

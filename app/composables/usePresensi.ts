@@ -1,6 +1,8 @@
 export const usePresensi = () => {
     const presensi = useState<any[]>("presensi", () => []);
 
+    const { $toast } = useNuxtApp();
+
     const normalize = (item: any) => ({
         id: item.id ?? 0,
         jenis_presensi: item.jenis_presensi ?? "",
@@ -51,6 +53,7 @@ export const usePresensi = () => {
 
         presensi.value = [...presensi.value, newData];
         saveData();
+        $toast.success("Data berhasil disimpan");
     };
 
     // UPDATE

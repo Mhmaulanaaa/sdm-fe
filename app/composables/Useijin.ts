@@ -1,6 +1,8 @@
 export const useIjin = () => {
     const ijin = useState<any[]>("ijin", () => []);
 
+    const { $toast } = useNuxtApp();
+
     const normalize = (item: any) => ({
         id: item.id ?? 0,
         nama_pegawai: item.nama_pegawai ?? "",
@@ -52,6 +54,7 @@ export const useIjin = () => {
     const saveData = () => {
         if (typeof window === "undefined") return;
         localStorage.setItem("ijin", JSON.stringify(ijin.value));
+        $toast.success("Data berhasil disimpan");
     };
 
     // CREATE
